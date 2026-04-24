@@ -258,6 +258,12 @@ body {
   color: #333;
 }
 
+.exp-file-name {
+  margin: 8px 12px 0;
+  font-size: 12px;
+  color: #666;
+}
+
 .copy-btn {
   border: 1px solid #c9c9c9;
   background: #fff;

@@ -570,19 +570,67 @@ model.fit(datagen.flow(x_train, y_train, batch_size=64), epochs=5, validation_da
 loss, accuracy = model.evaluate(x_test, y_test)
 print("Test Accuracy:", accuracy * 100)`
 
-const expFiles: Record<string, { filename: string; code: string }> = {
-  'Exp-1': { filename: 'perceptron_gate.py', code: exp1Code },
-  'Exp-2': { filename: 'xor_neural_network.py', code: exp2Code },
-  'Exp-3': { filename: 'mnist_even_odd_classifier.py', code: exp3Code },
-  'Exp-4': { filename: 'wine_classification_nn.py', code: exp4Code },
-  'Exp-5': { filename: 'imdb_lstm_sentiment.py', code: exp5Code },
-  'Exp-6': { filename: 'bike_rental_regression.py', code: exp6Code },
-  'Exp-7': { filename: 'boston_rnn_regression.py', code: exp7Code },
-  'Exp-8': { filename: 'mnist_cnn_even_odd.py', code: exp8Code },
-  'Exp-9': { filename: 'pima_diabetes_classifier.py', code: exp9Code },
-  'Exp-10': { filename: 'simple_rnn_binary_classifier.py', code: exp10Code },
-  'Exp-11': { filename: 'temperature_lstm_forecast.py', code: exp11Code },
-  'Exp-12': { filename: 'cifar10_cnn_classifier.py', code: exp12Code },
+const expFiles: Record<string, { title: string; filename: string; code: string }> = {
+  'Exp-1': {
+    title: 'Perceptron for AND and OR Gates',
+    filename: 'perceptron_gate.py',
+    code: exp1Code,
+  },
+  'Exp-2': {
+    title: 'XOR using a Two-Layer Neural Network',
+    filename: 'xor_neural_network.py',
+    code: exp2Code,
+  },
+  'Exp-3': {
+    title: 'MNIST Even/Odd Digit Classification (ANN)',
+    filename: 'mnist_even_odd_classifier.py',
+    code: exp3Code,
+  },
+  'Exp-4': {
+    title: 'Wine Dataset Multiclass Classification',
+    filename: 'wine_classification_nn.py',
+    code: exp4Code,
+  },
+  'Exp-5': {
+    title: 'IMDB Sentiment Analysis using LSTM',
+    filename: 'imdb_lstm_sentiment.py',
+    code: exp5Code,
+  },
+  'Exp-6': {
+    title: 'Bike Rental Demand Regression',
+    filename: 'bike_rental_regression.py',
+    code: exp6Code,
+  },
+  'Exp-7': {
+    title: 'Boston Housing Price Prediction using RNN',
+    filename: 'boston_rnn_regression.py',
+    code: exp7Code,
+  },
+  'Exp-8': {
+    title: 'MNIST Even/Odd Classification using CNN',
+    filename: 'mnist_cnn_even_odd.py',
+    code: exp8Code,
+  },
+  'Exp-9': {
+    title: 'PIMA Diabetes Prediction (Binary Classification)',
+    filename: 'pima_diabetes_classifier.py',
+    code: exp9Code,
+  },
+  'Exp-10': {
+    title: 'Simple RNN Binary Classifier',
+    filename: 'simple_rnn_binary_classifier.py',
+    code: exp10Code,
+  },
+  'Exp-11': {
+    title: 'Time Series Temperature Forecasting with LSTM',
+    filename: 'temperature_lstm_forecast.py',
+    code: exp11Code,
+  },
+  'Exp-12': {
+    title: 'CIFAR-10 Image Classification using CNN',
+    filename: 'cifar10_cnn_classifier.py',
+    code: exp12Code,
+  },
 }
 
 function App() {
@@ -622,8 +670,9 @@ function App() {
               </button>
             </div>
             <h2 className="exp-title">
-              {activeExp} / {activeFile.filename}
+              {activeExp}: {activeFile.title}
             </h2>
+            <p className="exp-file-name">{activeFile.filename}</p>
             <pre className="code-block">{activeFile.code}</pre>
           </section>
         </main>
