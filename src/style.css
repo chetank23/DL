@@ -1,0 +1,291 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.jupyter-shell {
+  min-height: 100vh;
+  width: 100%;
+}
+
+.top-header {
+  height: 42px;
+  border-bottom: 1px solid #e5e5e5;
+  background: #f5f5f5;
+  padding: 0 16px 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.logo-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #e08924;
+  border-right-color: transparent;
+  transform: rotate(-20deg);
+  display: inline-block;
+}
+
+.brand-text {
+  font-size: 38px;
+  line-height: 1;
+  color: #555;
+  font-weight: 400;
+}
+
+.logout-btn {
+  border: 1px solid #c9c9c9;
+  background: #fff;
+  font-size: 12px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+.content {
+  padding: 18px 26px 0;
+  width: 100%;
+}
+
+.tabs {
+  display: flex;
+  align-items: flex-end;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 14px;
+}
+
+.tab {
+  border: 1px solid transparent;
+  border-bottom: 0;
+  background: transparent;
+  padding: 7px 16px;
+  margin-bottom: -1px;
+  color: #337ab7;
+  font-size: 14px;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.tab.active {
+  color: #555;
+  background: #fff;
+  border-color: #ddd;
+  border-radius: 4px 4px 0 0;
+}
+
+.helper-text {
+  margin: 0 0 10px;
+  font-size: 33px;
+  line-height: 1.15;
+  color: #111;
+}
+
+.table-wrap {
+  width: 100%;
+  border: 1px solid #ddd;
+  background: #fff;
+}
+
+.table-toolbar {
+  padding: 5px 6px 4px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: flex-end;
+  gap: 3px;
+}
+
+.small-btn,
+.icon-btn,
+.header-dd,
+.sort-btn {
+  border: 1px solid #c9c9c9;
+  background: #fff;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.small-btn {
+  padding: 2px 8px;
+  font-size: 11px;
+}
+
+.icon-btn {
+  width: 20px;
+  padding: 0;
+  font-size: 12px;
+}
+
+.list-header {
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.list-header-left,
+.list-header-right {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.header-dd {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.sort-btn {
+  height: 22px;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #333;
+}
+
+.file-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.file-table td {
+  border-bottom: 1px solid #ddd;
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.check-col {
+  width: 38px;
+  text-align: center;
+}
+
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.folder-icon {
+  width: 10px;
+  height: 8px;
+  border: 1px solid #888;
+  border-radius: 2px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.folder-icon::before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: -4px;
+  width: 4px;
+  height: 3px;
+  border: 1px solid #888;
+  border-bottom: none;
+  border-radius: 2px 2px 0 0;
+  background: #fff;
+}
+
+.folder-icon.blue {
+  border-color: #337ab7;
+}
+
+.folder-icon.blue::before {
+  border-color: #337ab7;
+}
+
+.name-link {
+  border: none;
+  background: none;
+  color: #337ab7;
+  font-size: 22px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.date-col {
+  width: 34%;
+  white-space: nowrap;
+  font-size: 22px;
+  color: #222;
+}
+
+.exp-panel {
+  margin-top: 16px;
+  border: 1px solid #ddd;
+  background: #fff;
+}
+
+.exp-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e5e5;
+  background: #f8f8f8;
+}
+
+.exp-title {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.copy-btn {
+  border: 1px solid #c9c9c9;
+  background: #fff;
+  font-size: 12px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.code-block {
+  margin: 0;
+  padding: 12px;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.exp-page {
+  border: 1px solid #ddd;
+  background: #fff;
+}
+
+.exp-page-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e5e5;
+  background: #f8f8f8;
+  padding: 8px 10px;
+}
