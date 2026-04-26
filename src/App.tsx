@@ -17,6 +17,21 @@ const modifiedTimes = [
   '2 weeks ago',
 ]
 
+const expShortLabels: Record<string, string> = {
+  'Exp-1': 'Perceptron Gates',
+  'Exp-2': 'XOR Neural Net',
+  'Exp-3': 'MNIST Even/Odd ANN',
+  'Exp-4': 'Wine Classifier',
+  'Exp-5': 'IMDB LSTM',
+  'Exp-6': 'Bike Rental Regression',
+  'Exp-7': 'Boston Price Predictor',
+  'Exp-8': 'MNIST CNN',
+  'Exp-9': 'Diabetes Classifier',
+  'Exp-10': 'Simple RNN',
+  'Exp-11': 'Temperature LSTM',
+  'Exp-12': 'CIFAR-10 CNN',
+}
+
 const exp1Code = `import numpy as np
 
 def step_function(x):
@@ -716,7 +731,9 @@ function App() {
                       <td className="name-cell">
                         <div className="name-content">
                           <button className="name-link" type="button" onClick={() => setActiveExp(name)}>
-                            {name}
+                            <span className="exp-number">{name}</span>
+                            <span className="exp-sep"> - </span>
+                            <span className="exp-short-name">{expShortLabels[name]}</span>
                           </button>
                         </div>
                       </td>

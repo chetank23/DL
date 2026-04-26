@@ -312,6 +312,15 @@ body {
   text-align: left;
 }
 
+.exp-number {
+  color: #337ab7;
+}
+
+.exp-sep,
+.exp-short-name {
+  color: #b7bec6;
+}
+
 .date-col {
   width: 19%;
   white-space: nowrap;
