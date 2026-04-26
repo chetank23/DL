@@ -184,6 +184,10 @@ body {
 }
 
 .name-cell {
+  padding-left: 10px;
+}
+
+.name-content {
   display: flex;
   align-items: center;
   gap: 8px;

@@ -692,10 +692,12 @@ function App() {
                       <input type="checkbox" aria-label={`Select ${name}`} />
                     </td>
                     <td className="name-cell">
-                      <span className="folder-icon" aria-hidden="true" />
-                      <button className="name-link" type="button" onClick={() => setActiveExp(name)}>
-                        {name}
-                      </button>
+                      <div className="name-content">
+                        <span className="folder-icon" aria-hidden="true" />
+                        <button className="name-link" type="button" onClick={() => setActiveExp(name)}>
+                          {name}
+                        </button>
+                      </div>
                     </td>
                     <td className="date-col">just now</td>
                   </tr>
