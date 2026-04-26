@@ -348,13 +348,14 @@ body {
 
 .exp-title {
   margin: 0;
-  font-size: 14px;
-  color: #333;
+  font-size: 18px;
+  color: #2f2f2f;
+  line-height: 1.3;
 }
 
 .exp-file-name {
-  margin: 8px 12px 0;
-  font-size: 12px;
+  margin: 6px 24px 0;
+  font-size: 13px;
   color: #666;
 }
 
@@ -362,30 +363,46 @@ body {
   border: 1px solid #c9c9c9;
   background: #fff;
   font-size: 12px;
-  padding: 4px 10px;
+  padding: 6px 12px;
+  border-radius: 3px;
   cursor: pointer;
 }
 
 .code-block {
-  margin: 0;
-  padding: 12px;
+  margin: 12px 24px 24px;
+  padding: 16px;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  background: #fcfcfc;
   font-family: Consolas, "Courier New", monospace;
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.55;
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 70vh;
   white-space: pre;
 }
 
 .exp-page {
+  width: min(1040px, 96%);
+  margin: 14px auto 20px;
   border: 1px solid #ddd;
+  border-radius: 4px;
   background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .exp-page-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 8px;
   border-bottom: 1px solid #e5e5e5;
   background: #f8f8f8;
-  padding: 8px 10px;
+  padding: 10px 12px;
+  border-radius: 4px 4px 0 0;
+}
+
+.exp-content {
+  padding-top: 10px;
 }

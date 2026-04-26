@@ -645,7 +645,7 @@ function App() {
       </div>
 
       {activeFile ? (
-        <main className="content">
+        <main className="content exp-content">
           <section className="exp-page" aria-label={`${activeExp} detail page`}>
             <div className="exp-page-top">
               <button className="small-btn" type="button" onClick={() => setActiveExp(null)}>
