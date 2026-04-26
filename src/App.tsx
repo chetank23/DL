@@ -611,13 +611,23 @@ function App() {
     <div className="jupyter-shell">
       <header className="top-header">
         <div className="brand">
-          <span className="logo-dot" />
-          <span className="brand-text">jupyter</span>
+          <img className="brand-logo" src="/jupyter-logo.png" alt="jupyter" />
         </div>
-        <button className="logout-btn" type="button">
-          Logout
-        </button>
       </header>
+      <div className="menu-strip">
+        <button className="menu-item" type="button">
+          File
+        </button>
+        <button className="menu-item" type="button">
+          View
+        </button>
+        <button className="menu-item" type="button">
+          Settings
+        </button>
+        <button className="menu-item" type="button">
+          Help
+        </button>
+      </div>
 
       {activeFile ? (
         <main className="content">
@@ -639,71 +649,76 @@ function App() {
         </main>
       ) : (
         <main className="content">
-          <nav className="tabs" aria-label="Sections">
-            <button className="tab active" type="button">
-              Files
-            </button>
-            <button className="tab" type="button">
-              Running
-            </button>
-            <button className="tab" type="button">
-              Clusters
-            </button>
-          </nav>
-
-          <p className="helper-text">Select items to perform actions on them.</p>
-
-          <section className="table-wrap" aria-label="Notebook files">
-            <div className="table-toolbar">
-              <button className="small-btn" type="button">
-                Upload
-              </button>
-              <button className="small-btn" type="button">
-                New <span aria-hidden="true">▼</span>
-              </button>
-              <button className="icon-btn" type="button" aria-label="Refresh">
-                ↻
-              </button>
-            </div>
-
-            <div className="list-header">
-              <div className="list-header-left">
-                <input type="checkbox" aria-label="Select all files" />
-                <button className="header-dd" type="button" aria-label="Select options">
-                  ▾
+          <section className="main-panel" aria-label="Notebook files">
+            <div className="panel-top">
+              <nav className="tabs" aria-label="Sections">
+                <button className="tab active" type="button">
+                  Files
                 </button>
-                <span className="folder-icon blue" aria-hidden="true" />
-              </div>
-              <div className="list-header-right">
-                <button className="sort-btn" type="button">
-                  Name <span aria-hidden="true">↑</span>
+                <button className="tab" type="button">
+                  Running
                 </button>
-                <button className="sort-btn" type="button">
-                  Last Modified <span aria-hidden="true">↑</span>
+                <button className="tab" type="button">
+                  Clusters
+                </button>
+              </nav>
+              <div className="table-toolbar">
+                <button className="small-btn" type="button">
+                  New <span aria-hidden="true">▼</span>
+                </button>
+                <button className="small-btn" type="button">
+                  Upload
+                </button>
+                <button className="icon-btn" type="button" aria-label="Refresh">
+                  ↻
                 </button>
               </div>
             </div>
 
-            <table className="file-table">
-              <tbody>
-                {entries.map((name) => (
-                  <tr key={name}>
-                    <td className="check-col">
-                      <input type="checkbox" aria-label={`Select ${name}`} />
-                    </td>
-                    <td className="name-cell">
-                      <div className="name-content">
-                        <span className="folder-icon" aria-hidden="true" />
-                        <button className="name-link" type="button" onClick={() => setActiveExp(name)}>
-                          {name}
-                        </button>
-                      </div>
-                    </td>
-                    <td className="date-col">just now</td>
+            <p className="helper-text">Select items to perform actions on them.</p>
+
+            <section className="table-wrap">
+              <div className="list-header">
+                <div className="list-header-left">
+                  <span className="folder-icon blue" aria-hidden="true" />
+                  <span className="path-text">/</span>
+                </div>
+              </div>
+
+              <table className="file-table">
+                <thead>
+                  <tr>
+                    <th className="check-col">
+                      <input type="checkbox" aria-label="Select all files" />
+                    </th>
+                    <th className="name-head">
+                      Name <span aria-hidden="true">▲</span>
+                    </th>
+                    <th className="date-col">Last Modified</th>
+                    <th className="size-col">File Size</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {entries.map((name) => (
+                    <tr key={name}>
+                      <td className="check-col">
+                        <input type="checkbox" aria-label={`Select ${name}`} />
+                      </td>
+                      <td className="name-cell">
+                        <div className="name-content">
+                          <span className="file-icon" aria-hidden="true" />
+                          <button className="name-link" type="button" onClick={() => setActiveExp(name)}>
+                            {name}
+                          </button>
+                        </div>
+                      </td>
+                      <td className="date-col">just now</td>
+                      <td className="size-col" />
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
           </section>
         </main>
       )}
