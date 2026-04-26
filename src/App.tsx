@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 const entries = Array.from({ length: 12 }, (_, i) => `Exp-${i + 1}`)
+const fileSizes = ['2 KB', '5 KB', '8 KB', '12 KB', '16 KB', '21 KB', '29 KB', '34 KB', '40 KB', '47 KB', '53 KB', '61 KB']
 
 const exp1Code = `import numpy as np
 
@@ -683,37 +684,31 @@ function App() {
                   <span className="folder-icon blue" aria-hidden="true" />
                   <span className="path-text">/</span>
                 </div>
+                <div className="list-header-right">
+                  <span className="list-col-name">
+                    Name <span aria-hidden="true">▲</span>
+                  </span>
+                  <span className="list-col-date">Last Modified</span>
+                  <span className="list-col-size">File Size</span>
+                </div>
               </div>
 
               <table className="file-table">
-                <thead>
-                  <tr>
-                    <th className="check-col">
-                      <input type="checkbox" aria-label="Select all files" />
-                    </th>
-                    <th className="name-head">
-                      Name <span aria-hidden="true">▲</span>
-                    </th>
-                    <th className="date-col">Last Modified</th>
-                    <th className="size-col">File Size</th>
-                  </tr>
-                </thead>
                 <tbody>
-                  {entries.map((name) => (
+                  {entries.map((name, index) => (
                     <tr key={name}>
                       <td className="check-col">
                         <input type="checkbox" aria-label={`Select ${name}`} />
                       </td>
                       <td className="name-cell">
                         <div className="name-content">
-                          <span className="file-icon" aria-hidden="true" />
                           <button className="name-link" type="button" onClick={() => setActiveExp(name)}>
                             {name}
                           </button>
                         </div>
                       </td>
                       <td className="date-col">just now</td>
-                      <td className="size-col" />
+                      <td className="size-col">{fileSizes[index]}</td>
                     </tr>
                   ))}
                 </tbody>
