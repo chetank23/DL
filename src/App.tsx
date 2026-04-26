@@ -34,44 +34,40 @@ const expShortLabels: Record<string, string> = {
 
 const exp1Code = `import numpy as np
 
-def step_function(x):
-    return 1 if x >= 0 else 0
-
 class Perceptron:
-    def __init__(self, learning_rate=0.1, epochs=10):
+    def __init__(self, input_size, learning_rate=0.1):
+        self.weights = np.zeros(input_size + 1)
         self.lr = learning_rate
-        self.epochs = epochs
 
-    def fit(self, X, y):
-        self.weights = np.zeros(X.shape[1])
-        self.bias = 0
-        for _ in range(self.epochs):
-            for i in range(len(X)):
-                linear_output = np.dot(X[i], self.weights) + self.bias
-                y_pred = step_function(linear_output)
-                self.weights += self.lr * (y[i] - y_pred) * X[i]
-                self.bias += self.lr * (y[i] - y_pred)
+    def activation(self, x):
+        return 1 if x >= 0 else 0
 
-    def predict(self, X):
-        return [step_function(np.dot(x, self.weights) + self.bias) for x in X]
+    def predict(self, x):
+        x = np.insert(x, 0, 1)
+        return self.activation(np.dot(self.weights, x))
 
-X = np.array([[0,0],[0,1],[1,0],[1,1]])
+    def train(self, training_inputs, labels, epochs=10):
+        for _ in range(epochs):
+            for x, y in zip(training_inputs, labels):
+                x = np.insert(x, 0, 1)
+                prediction = self.activation(np.dot(self.weights, x))
+                self.weights += self.lr * (y - prediction) * x
 
-y_and = np.array([0,0,0,1])
-model_and = Perceptron()
-model_and.fit(X, y_and)
+inputs = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 
-print("AND Gate")
-for i in X:
-    print(i, "->", model_and.predict([i])[0])
+and_labels = np.array([0, 0, 0, 1])
+and_gate = Perceptron(2)
+and_gate.train(inputs, and_labels)
 
-y_or = np.array([0,1,1,1])
-model_or = Perceptron()
-model_or.fit(X, y_or)
+for i in inputs:
+    print(i, and_gate.predict(i))
 
-print("OR Gate")
-for i in X:
-    print(i, "->", model_or.predict([i])[0])`
+or_labels = np.array([0, 1, 1, 1])
+or_gate = Perceptron(2)
+or_gate.train(inputs, or_labels)
+
+for i in inputs:
+    print(i, or_gate.predict(i))`
 
 const exp2Code = `import numpy as np
 
@@ -119,31 +115,35 @@ class NeuralNetwork:
             self.backward(inputs, outputs, output)
             if epoch % 1000 == 0:
                 loss = np.mean((outputs - output) ** 2)
-                print(f"Epoch {epoch} Loss: {loss:.4f}")
+                print(loss)
 
     def predict(self, inputs):
         return np.round(self.forward(inputs))
 
-X = np.array([[0,0],[0,1],[1,0],[1,1]])
-y = np.array([[0],[1],[1],[0]])
+X = np.array([[0, 0],
+              [0, 1],
+              [1, 0],
+              [1, 1]])
+
+y = np.array([[0],
+              [1],
+              [1],
+              [0]])
 
 nn = NeuralNetwork(2, 2, 1)
 nn.train(X, y)
 
-print("\\nXOR Predictions:")
 for x in X:
-    output = nn.predict(np.array([x]))
-    print(x, "->", int(output[0][0]))`
+    print(x, int(nn.predict(np.array([x]))[0][0]))`
 
 const exp3Code = `import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.datasets import mnist
 
-(X_train, y_train), (X_test, y_test) = mnist.load_data()
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-x_train = X_train / 255.0
-x_test = X_test / 255.0
+x_train, x_test = x_train / 255.0, x_test / 255.0
 
 y_train = (y_train % 2).astype("int32")
 y_test = (y_test % 2).astype("int32")
@@ -173,21 +173,16 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
 
 url = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data"
-
-columns = [
-    'Class','Alcohol','Malic Acid','Ash','Alcalinity of Ash','Magnesium',
-    'Total Phenols','Flavanoids','Nonflavanoid Phenols','Proanthocyanins',
-    'Color Intensity','Hue','OD280/OD315','Proline'
-]
+columns = ['Class', 'Alcohol', 'Malic Acid', 'Ash', 'Alcalinity of Ash', 'Magnesium',
+'Total Phenols', 'Flavanoids', 'Nonflavanoid Phenols', 'Proanthocyanins',
+'Color Intensity', 'Hue', 'OD280/OD315', 'Proline']
 
 wine_data = pd.read_csv(url, header=None, names=columns)
 
 X = wine_data.iloc[:, 1:].values
 y = wine_data.iloc[:, 0].values - 1
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y
-)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
@@ -199,21 +194,17 @@ model = keras.Sequential([
     keras.layers.Dense(3, activation='softmax')
 ])
 
-model.compile(
-    optimizer='adam',
-    loss='sparse_categorical_crossentropy',
-    metrics=['accuracy']
-)
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 model.fit(X_train, y_train, epochs=50, batch_size=5, validation_data=(X_test, y_test))
 
 test_loss, test_acc = model.evaluate(X_test, y_test)
-print("Test Accuracy:", test_acc)
+print(test_acc)
 
 predictions = np.argmax(model.predict(X_test), axis=1)
 
 acc = accuracy_score(y_test, predictions)
-print("Classification Accuracy:", acc)`
+print(acc)`
 
 const exp5Code = `import numpy as np
 from tensorflow import keras
@@ -231,7 +222,7 @@ x_train = pad_sequences(x_train, maxlen=max_len)
 x_test = pad_sequences(x_test, maxlen=max_len)
 
 model = Sequential()
-model.add(layers.Embedding(input_dim=max_words, output_dim=128))
+model.add(layers.Embedding(input_dim=max_words, output_dim=128, input_length=max_len))
 model.add(layers.LSTM(128))
 model.add(layers.Dense(1, activation='sigmoid'))
 
@@ -239,11 +230,22 @@ model.compile(loss='binary_crossentropy', optimizer=Adam(), metrics=['accuracy']
 
 model.fit(x_train, y_train, epochs=5, batch_size=64, validation_data=(x_test, y_test))
 
-loss, acc = model.evaluate(x_test, y_test)
-print(acc)
+test_loss, test_acc = model.evaluate(x_test, y_test)
+print(test_acc)
 
 predictions = model.predict(x_test[:5])
-print(predictions)`
+print(predictions)
+
+user_input = input()
+user_review = [int(i) for i in user_input.split()]
+user_review = pad_sequences([user_review], maxlen=max_len)
+
+prediction = model.predict(user_review)[0][0]
+
+if prediction >= 0.5:
+    print("POSITIVE")
+else:
+    print("NEGATIVE")`
 
 const exp6Code = `import pandas as pd
 import numpy as np
@@ -253,9 +255,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
 from tensorflow import keras
 from tensorflow.keras import layers
+from google.colab import files
 
-url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00275/day.csv"
-day_data = pd.read_csv(url)
+uploaded = files.upload()
+
+day_data = pd.read_csv("bikerent_data.csv")
 
 day_data = day_data.drop(columns=["instant", "dteday", "casual", "registered"])
 
@@ -299,16 +303,27 @@ r2 = r2_score(y_test, y_pred)
 print(mse)
 print(r2)
 
+plt.figure(figsize=(10, 5))
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
-plt.show()`
+plt.show()
+
+user_input = {}
+for col in X.columns:
+    val = float(input())
+    user_input[col] = val
+
+user_df = pd.DataFrame([user_input])
+user_scaled = scaler.transform(user_df)
+
+prediction = model.predict(user_scaled)[0][0]
+print(int(prediction))`
 
 const exp7Code = `import pandas as pd
-import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow import keras
+from tensorflow.keras.layers import SimpleRNN, Dense
 
 url = "https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv"
 data = pd.read_csv(url)
@@ -317,39 +332,30 @@ X = data.drop('medv', axis=1)
 y = data['medv']
 
 scaler = MinMaxScaler()
-X_scaled = scaler.fit_transform(X)
+X = scaler.fit_transform(X)
+
+X = X.reshape(X.shape[0], 1, X.shape[1])
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X_scaled, y, test_size=0.2, random_state=42
+    X, y, test_size=0.2, random_state=42
 )
 
-model = Sequential([
-    Dense(128, activation='relu', input_shape=(X_train.shape[1],)),
-    Dense(64, activation='relu'),
-    Dense(1)
-])
+model = keras.Sequential()
+model.add(SimpleRNN(128, activation='relu', input_shape=(X_train.shape[1], X_train.shape[2])))
+model.add(Dense(1))
 
 model.compile(optimizer='adam', loss='mse', metrics=['mae'])
 
 model.fit(X_train, y_train, epochs=50, batch_size=32)
 
 loss, mae = model.evaluate(X_test, y_test)
-print("Mean Absolute Error:", mae)
 
-user_input = []
-for col in X.columns:
-    val = float(input(f"{col}: "))
-    user_input.append(val)
+print(mae)`
 
-user_input = np.array(user_input).reshape(1, -1)
-user_input = scaler.transform(user_input)
-
-prediction = model.predict(user_input)[0][0]
-print("Predicted Price:", prediction)`
-
-const exp8Code = `import tensorflow as tf
-from tensorflow.keras.models import Sequential
+const exp8Code = `import tensorflow
+from tensorflow import keras
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.datasets import mnist
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -360,8 +366,8 @@ x_test = x_test / 255.0
 x_train = x_train.reshape(-1, 28, 28, 1)
 x_test = x_test.reshape(-1, 28, 28, 1)
 
-y_train = (y_train % 2).astype("int32")
-y_test = (y_test % 2).astype("int32")
+y_train_eo = (y_train % 2).astype("int32")
+y_test_eo = (y_test % 2).astype("int32")
 
 model = Sequential([
     Conv2D(32, (3,3), activation="relu", input_shape=(28,28,1)),
@@ -371,24 +377,19 @@ model = Sequential([
     Dense(1, activation="sigmoid")
 ])
 
-model.compile(
-    optimizer="adam",
-    loss="binary_crossentropy",
-    metrics=["accuracy"]
-)
+model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
 
-model.fit(
-    x_train, y_train,
-    epochs=5,
-    validation_data=(x_test, y_test)
-)
+model.fit(x_train, y_train_eo, epochs=5, validation_data=(x_test, y_test_eo))
 
-loss, accuracy = model.evaluate(x_test, y_test)
-print("Test Loss:", loss)
-print("Accuracy:", accuracy)`
+loss, accuracy = model.evaluate(x_test, y_test_eo, verbose=0)
+
+print(loss)
+print(accuracy)`
 
 const exp9Code = `import numpy as np
 import pandas as pd
+import tensorflow as tf
+from tensorflow import keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from sklearn.model_selection import train_test_split
@@ -397,8 +398,8 @@ from sklearn.preprocessing import StandardScaler
 url = 'https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv'
 
 column_names = [
-'Pregnancies','Glucose','BloodPressure','SkinThickness',
-'Insulin','BMI','DiabetesPedigreeFunction','Age','Outcome'
+'Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness',
+'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age', 'Outcome'
 ]
 
 df = pd.read_csv(url, header=None, names=column_names)
@@ -413,17 +414,18 @@ X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
 model = Sequential([
-    Dense(16, activation='relu', input_shape=(8,)),
+    Dense(16, input_shape=(8,), activation='relu'),
     Dense(8, activation='relu'),
     Dense(1, activation='sigmoid')
 ])
 
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-model.fit(X_train, y_train, epochs=100, batch_size=10)
+model.fit(X_train, y_train, epochs=100, batch_size=10, verbose=1)
 
-loss, accuracy = model.evaluate(X_test, y_test)
-print("Test Accuracy:", accuracy)`
+loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
+
+print(accuracy)`
 
 const exp10Code = `import numpy as np
 from tensorflow import keras
@@ -441,36 +443,37 @@ y = np.random.randint(0, 2, samples)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-model = keras.Sequential([
-    SimpleRNN(32, activation='relu', input_shape=(timesteps, features)),
-    Dense(1, activation='sigmoid')
-])
+model = keras.Sequential()
+model.add(SimpleRNN(32, activation='relu', input_shape=(timesteps, features)))
+model.add(Dense(1, activation='sigmoid'))
 
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-model.fit(X_train, y_train, epochs=10, batch_size=32)
+model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=0)
 
-loss, accuracy = model.evaluate(X_test, y_test)
-print("Test Accuracy:", accuracy)`
+_, accuracy = model.evaluate(X_test, y_test, verbose=0)
+
+print(accuracy)`
 
 const exp11Code = `import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 
 url = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/daily-min-temperatures.csv"
 data = pd.read_csv(url)
 
-values = data['Temp'].values.reshape(-1, 1)
+values = data['Temp'].values.reshape(-1,1)
 
 scaler = MinMaxScaler()
 scaled_data = scaler.fit_transform(values)
 
 def create_sequences(data, time_steps=10):
     X, y = [], []
-    for i in range(len(data) - time_steps):
+    for i in range(len(data)-time_steps):
         X.append(data[i:i+time_steps])
         y.append(data[i+time_steps])
     return np.array(X), np.array(y)
@@ -478,12 +481,10 @@ def create_sequences(data, time_steps=10):
 time_steps = 10
 X, y = create_sequences(scaled_data, time_steps)
 
-split = int(len(X) * 0.8)
-X_train, X_test = X[:split], X[split:]
-y_train, y_test = y[:split], y[split:]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
 
 model = Sequential([
-    LSTM(50, input_shape=(time_steps, 1)),
+    LSTM(50, activation='relu', input_shape=(time_steps, 1)),
     Dense(1)
 ])
 
@@ -492,74 +493,66 @@ model.compile(optimizer='adam', loss='mse')
 model.fit(X_train, y_train, epochs=20, batch_size=32)
 
 loss = model.evaluate(X_test, y_test)
-print("Test MSE:", loss)
+print(loss)
 
 predictions = model.predict(X_test)
 
 predictions = scaler.inverse_transform(predictions)
-y_test_actual = scaler.inverse_transform(y_test.reshape(-1, 1))
+y_test_actual = scaler.inverse_transform(y_test)
 
-plt.figure()
-plt.plot(y_test_actual, label="Actual")
-plt.plot(predictions, label="Predicted")
-plt.legend()
-plt.title("Temperature Prediction")
+plt.plot(y_test_actual)
+plt.plot(predictions)
 plt.show()
 
-print("Enter last 10 temperature values (space-separated):")
 user_input = input()
-
 user_values = list(map(float, user_input.split()))
 
-if len(user_values) != 10:
-    print("Enter exactly 10 values")
-else:
+if len(user_values) == 10:
     user_array = np.array(user_values).reshape(-1, 1)
     user_scaled = scaler.transform(user_array)
     user_scaled = user_scaled.reshape(1, 10, 1)
-
-    pred_scaled = model.predict(user_scaled)
-    pred_temp = scaler.inverse_transform(pred_scaled)
-
-    print("Predicted next temperature:", round(pred_temp[0][0], 2))`
+    predicted_scaled = model.predict(user_scaled)
+    predicted_temp = scaler.inverse_transform(predicted_scaled)
+    print(predicted_temp[0][0])
+else:
+    print("Invalid input")`
 
 const exp12Code = `import tensorflow as tf
-from tensorflow.keras.datasets import cifar10
+from tensorflow.keras import datasets, layers, models
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
-from tensorflow.keras.utils import to_categorical
 
-(x_train, y_train), (x_test, y_test) = cifar10.load_data()
+(x_train, y_train), (x_test, y_test) = datasets.cifar10.load_data()
 
-x_train = x_train / 255.0
-x_test = x_test / 255.0
+x_train, x_test = x_train / 255.0, x_test / 255.0
 
-y_train = to_categorical(y_train, 10)
-y_test = to_categorical(y_test, 10)
+datagen = ImageDataGenerator(
+    rotation_range=15,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    horizontal_flip=True
+)
 
-datagen = ImageDataGenerator(horizontal_flip=True)
 datagen.fit(x_train)
 
-model = Sequential([
-    Conv2D(32, (3,3), activation='relu', padding='same', input_shape=x_train.shape[1:]),
-    MaxPooling2D((2,2)),
-    Dropout(0.25),
-    Conv2D(64, (3,3), activation='relu', padding='same'),
-    MaxPooling2D((2,2)),
-    Dropout(0.25),
-    Flatten(),
-    Dense(512, activation='relu'),
-    Dropout(0.5),
-    Dense(10, activation='softmax')
+model = models.Sequential([
+    layers.Conv2D(32, (3,3), activation='relu', input_shape=(32,32,3)),
+    layers.MaxPooling2D((2,2)),
+    layers.Conv2D(64, (3,3), activation='relu'),
+    layers.MaxPooling2D((2,2)),
+    layers.Conv2D(64, (3,3), activation='relu'),
+    layers.Flatten(),
+    layers.Dense(64, activation='relu'),
+    layers.Dense(10, activation='softmax')
 ])
 
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-model.fit(datagen.flow(x_train, y_train, batch_size=64), epochs=5, validation_data=(x_test, y_test))
+model.fit(datagen.flow(x_train, y_train, batch_size=64), epochs=10, validation_data=(x_test, y_test))
 
 loss, accuracy = model.evaluate(x_test, y_test)
-print("Test Accuracy:", accuracy * 100)`
+
+print(loss)
+print(accuracy)`
 
 const expFiles: Record<string, { title: string; filename: string; code: string }> = {
   'Exp-1': {
