@@ -105,40 +105,34 @@ for x in X:
     output = nn.predict(np.array([x]))
     print(x, "->", int(output[0][0]))`
 
-const exp3Code = `import numpy as np
-import tensorflow as tf
+const exp3Code = `import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.datasets import mnist
 
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
-y_train = np.array([0 if i % 2 == 0 else 1 for i in y_train])
-y_test = np.array([0 if i % 2 == 0 else 1 for i in y_test])
+x_train = X_train / 255.0
+x_test = X_test / 255.0
 
-X_train = X_train / 255.0
-X_test = X_test / 255.0
+y_train = (y_train % 2).astype("int32")
+y_test = (y_test % 2).astype("int32")
 
 model = Sequential([
     Flatten(input_shape=(28, 28)),
-    Dense(128, activation='relu'),
-    Dense(64, activation='relu'),
-    Dense(1, activation='sigmoid')
+    Dense(64, activation="relu"),
+    Dense(32, activation="relu"),
+    Dense(1, activation="sigmoid")
 ])
 
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
 
-model.fit(X_train, y_train, epochs=10, batch_size=32, validation_split=0.2)
+model.fit(x_train, y_train, epochs=10, validation_data=(x_test, y_test))
 
-loss, accuracy = model.evaluate(X_test, y_test)
-print("Loss:", loss)
-print("Accuracy:", accuracy)
+loss, accuracy = model.evaluate(x_test, y_test)
 
-predictions = model.predict(X_test[:10])
-
-print("\\nPredictions (0=Even, 1=Odd):")
-for i in range(10):
-    print("Digit:", i, "->", int(round(predictions[i][0])))`
+print(loss)
+print(accuracy)`
 
 const exp4Code = `import numpy as np
 import pandas as pd
@@ -192,9 +186,11 @@ acc = accuracy_score(y_test, predictions)
 print("Classification Accuracy:", acc)`
 
 const exp5Code = `import numpy as np
-from tensorflow.keras import layers, Sequential
+from tensorflow import keras
+from tensorflow.keras import layers
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.datasets import imdb
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 
 max_words = 10000
@@ -204,34 +200,20 @@ max_len = 500
 x_train = pad_sequences(x_train, maxlen=max_len)
 x_test = pad_sequences(x_test, maxlen=max_len)
 
-model = Sequential([
-    layers.Embedding(input_dim=max_words, output_dim=128, input_length=max_len),
-    layers.LSTM(128),
-    layers.Dense(1, activation='sigmoid')
-])
+model = Sequential()
+model.add(layers.Embedding(input_dim=max_words, output_dim=128))
+model.add(layers.LSTM(128))
+model.add(layers.Dense(1, activation='sigmoid'))
 
 model.compile(loss='binary_crossentropy', optimizer=Adam(), metrics=['accuracy'])
 
 model.fit(x_train, y_train, epochs=5, batch_size=64, validation_data=(x_test, y_test))
 
 loss, acc = model.evaluate(x_test, y_test)
-print("Test Accuracy:", acc)
+print(acc)
 
 predictions = model.predict(x_test[:5])
-print("Predictions:", predictions)
-
-print("\\nEnter review (word indices):")
-user_input = input()
-
-user_review = [int(i) for i in user_input.split()]
-user_review = pad_sequences([user_review], maxlen=max_len)
-
-prediction = model.predict(user_review)[0][0]
-
-if prediction >= 0.5:
-    print("POSITIVE")
-else:
-    print("NEGATIVE")`
+print(predictions)`
 
 const exp6Code = `import pandas as pd
 import numpy as np
@@ -277,43 +259,26 @@ history = model.fit(
 )
 
 loss, mae = model.evaluate(X_test, y_test)
-print("Test MAE:", mae)
+print(mae)
 
 y_pred = model.predict(X_test).flatten()
 
 mse = mean_squared_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
 
-print("Test MSE:", mse)
-print("R2 Score:", r2)
+print(mse)
+print(r2)
 
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
-plt.xlabel("Epochs")
-plt.ylabel("Loss")
-plt.title("Training vs Validation Loss")
-plt.legend(["Train", "Validation"])
-plt.show()
-
-print("\\nEnter values to predict bike rentals:")
-
-user_input = []
-for col in X.columns:
-    val = float(input(f"{col}: "))
-    user_input.append(val)
-
-user_input = np.array(user_input).reshape(1, -1)
-user_scaled = scaler.transform(user_input)
-
-prediction = model.predict(user_scaled)[0][0]
-print("Predicted Rentals:", int(prediction))`
+plt.show()`
 
 const exp7Code = `import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
-from tensorflow.keras import Sequential
-from tensorflow.keras.layers import SimpleRNN, Dense
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
 
 url = "https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv"
 data = pd.read_csv(url)
@@ -324,14 +289,13 @@ y = data['medv']
 scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
-X_scaled = X_scaled.reshape(X_scaled.shape[0], 1, X_scaled.shape[1])
-
 X_train, X_test, y_train, y_test = train_test_split(
     X_scaled, y, test_size=0.2, random_state=42
 )
 
 model = Sequential([
-    SimpleRNN(128, activation='relu', input_shape=(X_train.shape[1], X_train.shape[2])),
+    Dense(128, activation='relu', input_shape=(X_train.shape[1],)),
+    Dense(64, activation='relu'),
     Dense(1)
 ])
 
@@ -342,8 +306,6 @@ model.fit(X_train, y_train, epochs=50, batch_size=32)
 loss, mae = model.evaluate(X_test, y_test)
 print("Mean Absolute Error:", mae)
 
-print("\\nEnter house details:")
-
 user_input = []
 for col in X.columns:
     val = float(input(f"{col}: "))
@@ -351,7 +313,6 @@ for col in X.columns:
 
 user_input = np.array(user_input).reshape(1, -1)
 user_input = scaler.transform(user_input)
-user_input = user_input.reshape(1, 1, user_input.shape[1])
 
 prediction = model.predict(user_input)[0][0]
 print("Predicted Price:", prediction)`
