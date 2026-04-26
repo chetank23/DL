@@ -2,6 +2,20 @@ import { useState } from 'react'
 
 const entries = Array.from({ length: 12 }, (_, i) => `Exp-${i + 1}`)
 const fileSizes = ['2 KB', '5 KB', '8 KB', '12 KB', '16 KB', '21 KB', '29 KB', '34 KB', '40 KB', '47 KB', '53 KB', '61 KB']
+const modifiedTimes = [
+  '3 minutes ago',
+  '12 minutes ago',
+  '28 minutes ago',
+  '1 hour ago',
+  '2 hours ago',
+  '5 hours ago',
+  '8 hours ago',
+  'yesterday',
+  '2 days ago',
+  '4 days ago',
+  '1 week ago',
+  '2 weeks ago',
+]
 
 const exp1Code = `import numpy as np
 
@@ -706,7 +720,7 @@ function App() {
                           </button>
                         </div>
                       </td>
-                      <td className="date-col">just now</td>
+                      <td className="date-col">{modifiedTimes[index]}</td>
                       <td className="size-col">{fileSizes[index]}</td>
                     </tr>
                   ))}
