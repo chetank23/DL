@@ -681,8 +681,7 @@ function App() {
             <section className="table-wrap">
               <div className="list-header">
                 <div className="list-header-left">
-                  <span className="folder-icon blue" aria-hidden="true" />
-                  <span className="path-text">/</span>
+                  <input type="checkbox" aria-label="Select header row" />
                 </div>
                 <div className="list-header-right">
                   <span className="list-col-name">
