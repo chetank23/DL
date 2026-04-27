@@ -319,19 +319,18 @@ user_scaled = scaler.transform(user_df)
 prediction = model.predict(user_scaled)[0][0]
 print(int(prediction))`
 
-const exp7Code = `import numpy as np
-import pandas as pd
+const exp7Code = `import pandas as pd
+import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import SimpleRNN, Dense
-from tensorflow.keras.callbacks import EarlyStopping
 
 url = "https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv"
 data = pd.read_csv(url)
 
-X = data.drop("medv", axis=1).values
-y = data["medv"].values
+X = data.drop("medv", axis=1)
+y = data["medv"]
 
 scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
@@ -350,14 +349,11 @@ model = Sequential([
 
 model.compile(optimizer="adam", loss="mse", metrics=["mae"])
 
-early_stop = EarlyStopping(monitor="val_loss", patience=10, restore_best_weights=True)
-
 model.fit(
-    X_train, y_train,
-    validation_split=0.2,
-    epochs=100,
+    X_train,
+    y_train,
+    epochs=50,
     batch_size=32,
-    callbacks=[early_stop],
     verbose=1
 )
 
