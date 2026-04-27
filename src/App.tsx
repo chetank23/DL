@@ -542,41 +542,51 @@ else:
     print("Invalid input")`
 
 const exp12Code = `import tensorflow as tf
-from tensorflow.keras import datasets, layers, models
+from tensorflow.keras.datasets import cifar10
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+from tensorflow.keras.utils import to_categorical
 
-(x_train, y_train), (x_test, y_test) = datasets.cifar10.load_data()
+(x_train, y_train), (x_test, y_test) = cifar10.load_data()
 
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
+y_train = to_categorical(y_train, num_classes=10)
+y_test = to_categorical(y_test, num_classes=10)
+
 datagen = ImageDataGenerator(
-    rotation_range=15,
-    width_shift_range=0.1,
-    height_shift_range=0.1,
-    horizontal_flip=True
+    horizontal_flip=True,
 )
 
 datagen.fit(x_train)
 
-model = models.Sequential([
-    layers.Conv2D(32, (3,3), activation='relu', input_shape=(32,32,3)),
-    layers.MaxPooling2D((2,2)),
-    layers.Conv2D(64, (3,3), activation='relu'),
-    layers.MaxPooling2D((2,2)),
-    layers.Conv2D(64, (3,3), activation='relu'),
-    layers.Flatten(),
-    layers.Dense(64, activation='relu'),
-    layers.Dense(10, activation='softmax')
+model = Sequential([
+    Conv2D(32, (3, 3), activation='relu', padding='same', input_shape=x_train.shape[1:]),
+    MaxPooling2D((2, 2)),
+    Dropout(0.25),
+
+    Conv2D(64, (3, 3), activation='relu', padding='same'),
+    MaxPooling2D((2, 2)),
+    Dropout(0.25),
+
+    Flatten(),
+    Dense(512, activation='relu'),
+    Dropout(0.5),
+    Dense(10, activation='softmax')
 ])
 
-model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-model.fit(datagen.flow(x_train, y_train, batch_size=64), epochs=10, validation_data=(x_test, y_test))
+model.fit(
+    datagen.flow(x_train, y_train, batch_size=64),
+    epochs=5,
+    validation_data=(x_test, y_test)
+)
 
-loss, accuracy = model.evaluate(x_test, y_test)
+_, accuracy = model.evaluate(x_test, y_test, verbose=0)
 
-print(loss)
-print(accuracy)`
+print(accuracy * 100)`
 
 const expFiles: Record<string, { title: string; filename: string; code: string }> = {
   'Exp-1': {
