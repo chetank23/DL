@@ -319,38 +319,66 @@ user_scaled = scaler.transform(user_df)
 prediction = model.predict(user_scaled)[0][0]
 print(int(prediction))`
 
-const exp7Code = `import pandas as pd
+const exp7Code = `import numpy as np
+import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
-from tensorflow import keras
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import SimpleRNN, Dense
+from tensorflow.keras.callbacks import EarlyStopping
 
 url = "https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv"
 data = pd.read_csv(url)
 
-X = data.drop('medv', axis=1)
-y = data['medv']
+X = data.drop("medv", axis=1).values
+y = data["medv"].values
 
 scaler = MinMaxScaler()
-X = scaler.fit_transform(X)
+X_scaled = scaler.fit_transform(X)
 
-X = X.reshape(X.shape[0], 1, X.shape[1])
+X_rnn = X_scaled.reshape(X_scaled.shape[0], 1, X_scaled.shape[1])
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
+    X_rnn, y, test_size=0.2, random_state=42
 )
 
-model = keras.Sequential()
-model.add(SimpleRNN(128, activation='relu', input_shape=(X_train.shape[1], X_train.shape[2])))
-model.add(Dense(1))
+model = Sequential([
+    SimpleRNN(64, activation="relu", input_shape=(X_train.shape[1], X_train.shape[2])),
+    Dense(32, activation="relu"),
+    Dense(1)
+])
 
-model.compile(optimizer='adam', loss='mse', metrics=['mae'])
+model.compile(optimizer="adam", loss="mse", metrics=["mae"])
 
-model.fit(X_train, y_train, epochs=50, batch_size=32)
+early_stop = EarlyStopping(monitor="val_loss", patience=10, restore_best_weights=True)
 
-loss, mae = model.evaluate(X_test, y_test)
+model.fit(
+    X_train, y_train,
+    validation_split=0.2,
+    epochs=100,
+    batch_size=32,
+    callbacks=[early_stop],
+    verbose=1
+)
 
-print(mae)`
+loss, mae = model.evaluate(X_test, y_test, verbose=0)
+print("Test Loss (MSE):", round(loss, 4))
+print("Test MAE:", round(mae, 4))
+
+feature_names = data.drop("medv", axis=1).columns
+print("Enter values for the following features:")
+user_input = []
+
+for feature in feature_names:
+    val = float(input(f"{feature}: "))
+    user_input.append(val)
+
+user_input = np.array(user_input).reshape(1, -1)
+user_input_scaled = scaler.transform(user_input)
+user_input_rnn = user_input_scaled.reshape(1, 1, user_input_scaled.shape[1])
+
+prediction = model.predict(user_input_rnn, verbose=0)
+print("Predicted House Price (MEDV):", round(float(prediction[0][0]), 4))`
 
 const exp8Code = `import tensorflow
 from tensorflow import keras
