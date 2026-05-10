@@ -660,58 +660,92 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 
 url = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/daily-min-temperatures.csv"
+
 data = pd.read_csv(url)
 
-values = data['Temp'].values.reshape(-1,1)
+values = data['Temp'].values.reshape(-1, 1)
 
 scaler = MinMaxScaler()
+
 scaled_data = scaler.fit_transform(values)
 
 def create_sequences(data, time_steps=10):
-    X, y = [], []
-    for i in range(len(data)-time_steps):
-        X.append(data[i:i+time_steps])
-        y.append(data[i+time_steps])
+    X = []
+    y = []
+
+    for i in range(len(data) - time_steps):
+        X.append(data[i:i + time_steps])
+        y.append(data[i + time_steps])
+
     return np.array(X), np.array(y)
 
 time_steps = 10
+
 X, y = create_sequences(scaled_data, time_steps)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    shuffle=False
+)
 
 model = Sequential([
     LSTM(50, activation='relu', input_shape=(time_steps, 1)),
     Dense(1)
 ])
 
-model.compile(optimizer='adam', loss='mse')
+model.compile(
+    optimizer='adam',
+    loss='mse'
+)
 
-model.fit(X_train, y_train, epochs=20, batch_size=32)
+model.fit(
+    X_train,
+    y_train,
+    epochs=20,
+    batch_size=32
+)
 
 loss = model.evaluate(X_test, y_test)
-print(loss)
+
+print(f"\\nTest MSE : {loss:.4f}")
 
 predictions = model.predict(X_test)
 
 predictions = scaler.inverse_transform(predictions)
+
 y_test_actual = scaler.inverse_transform(y_test)
 
-plt.plot(y_test_actual)
-plt.plot(predictions)
+plt.plot(y_test_actual, label="Actual")
+plt.plot(predictions, label="Predicted")
+
+plt.legend()
+
 plt.show()
 
-user_input = input()
+print("\\nPredict Next Day Temperature")
+print("\\nEnter last 10 temperature values separated by space")
+
+user_input = input(">> ")
+
 user_values = list(map(float, user_input.split()))
 
-if len(user_values) == 10:
-    user_array = np.array(user_values).reshape(-1, 1)
-    user_scaled = scaler.transform(user_array)
-    user_scaled = user_scaled.reshape(1, 10, 1)
-    predicted_scaled = model.predict(user_scaled)
-    predicted_temp = scaler.inverse_transform(predicted_scaled)
-    print(predicted_temp[0][0])
+if len(user_values) != 10:
+    print("Please enter exactly 10 values")
 else:
-    print("Invalid input")`
+    user_array = np.array(user_values).reshape(-1, 1)
+
+    user_scaled = scaler.transform(user_array)
+
+    user_scaled = user_scaled.reshape(1, 10, 1)
+
+    predicted_scaled = model.predict(user_scaled)
+
+    predicted_temp = scaler.inverse_transform(predicted_scaled)
+
+    print(f"Predicted Next Day Temperature : {predicted_temp[0][0]:.2f} °C")
+`
 
 const exp12Code = `import tensorflow as tf
 from tensorflow.keras.datasets import cifar10
@@ -727,19 +761,17 @@ x_train, x_test = x_train / 255.0, x_test / 255.0
 y_train = to_categorical(y_train, num_classes=10)
 y_test = to_categorical(y_test, num_classes=10)
 
-datagen = ImageDataGenerator(
-    horizontal_flip=True,
-)
+datagen = ImageDataGenerator(horizontal_flip=True)
 
 datagen.fit(x_train)
 
 model = Sequential([
-    Conv2D(32, (3, 3), activation='relu', padding='same', input_shape=x_train.shape[1:]),
-    MaxPooling2D((2, 2)),
+    Conv2D(32, (3,3), activation='relu', padding='same', input_shape=x_train.shape[1:]),
+    MaxPooling2D((2,2)),
     Dropout(0.25),
 
-    Conv2D(64, (3, 3), activation='relu', padding='same'),
-    MaxPooling2D((2, 2)),
+    Conv2D(64, (3,3), activation='relu', padding='same'),
+    MaxPooling2D((2,2)),
     Dropout(0.25),
 
     Flatten(),
@@ -750,15 +782,13 @@ model = Sequential([
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-model.fit(
-    datagen.flow(x_train, y_train, batch_size=64),
-    epochs=5,
-    validation_data=(x_test, y_test)
-)
+model.fit(datagen.flow(x_train, y_train, batch_size=64), epochs=5, validation_data=(x_test, y_test))
 
-_, accuracy = model.evaluate(x_test, y_test, verbose=0)
+loss, accuracy = model.evaluate(x_test, y_test, verbose=0)
 
-print(accuracy * 100)`
+print(f"\\nTest Loss : {loss:.4f}")
+print(f"Test Accuracy : {accuracy * 100:.2f}%")
+`
 
 const expFiles: Record<string, { title: string; filename: string; code: string }> = {
   'Exp-1': {
