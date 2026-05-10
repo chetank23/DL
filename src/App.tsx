@@ -470,7 +470,7 @@ loss, accuracy = model.evaluate(
     y_test,
     verbose=0
 )
-print(f"\\nTest Loss : {loss:.4f}")
+    
 print(f"Test Accuracy : {accuracy:.2f}")
 `;
 const exp10Code = `import numpy as np
