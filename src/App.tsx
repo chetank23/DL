@@ -484,40 +484,14 @@ features = 1
 samples = 1000
 X = np.random.rand(samples, timesteps, features)
 y = np.random.randint(0, 2, samples)
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.2,
-    random_state=42
-)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 model = keras.Sequential()
-model.add(
-    SimpleRNN(
-        32,
-        activation='relu',
-        input_shape=(timesteps, features)
-    )
-)
+model.add(SimpleRNN(32, activation='relu', input_shape=(timesteps, features)))
 model.add(Dense(1, activation='sigmoid'))
-model.compile(
-    optimizer='adam',
-    loss='binary_crossentropy',
-    metrics=['accuracy']
-)
-model.fit(
-    X_train,
-    y_train,
-    epochs=10,
-    batch_size=32,
-    verbose=0
-)
-loss, accuracy = model.evaluate(
-    X_test,
-    y_test,
-    verbose=0
-)
-print(f"Test Loss : {loss:.4f}")
-print(f"Test Accuracy : {accuracy:.4f}")
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=0)
+_, accuracy = model.evaluate(X_test, y_test, verbose=0)
+print(f"Test Accuracy: {accuracy}")
 `;
 const exp11Code = `import numpy as np
 import pandas as pd
