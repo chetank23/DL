@@ -158,13 +158,17 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.datasets import mnist
 
+# Load dataset
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
+# Normalize data
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
+# Convert labels to Even(0) / Odd(1)
 y_train = (y_train % 2).astype("int32")
 y_test = (y_test % 2).astype("int32")
 
+# Build model
 model = Sequential([
     Flatten(input_shape=(28, 28)),
     Dense(64, activation="relu"),
@@ -172,14 +176,29 @@ model = Sequential([
     Dense(1, activation="sigmoid")
 ])
 
-model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+# Compile model
+model.compile(
+    optimizer="adam",
+    loss="binary_crossentropy",
+    metrics=["accuracy"]
+)
 
-model.fit(x_train, y_train, epochs=10, validation_data=(x_test, y_test))
+# Train model
+model.fit(
+    x_train,
+    y_train,
+    epochs=10,
+    validation_data=(x_test, y_test)
+)
 
+# Evaluate model
 loss, accuracy = model.evaluate(x_test, y_test)
 
-print(loss)
-print(accuracy)`
+# Print final results
+print("\\nFinal Results")
+print(f"Loss : {loss:.4f}")
+print(f"Accuracy : {accuracy:.4f}")
+`
 
 const exp4Code = `import numpy as np
 import pandas as pd
@@ -189,39 +208,74 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
 
+# Load Dataset
 url = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data"
-columns = ['Class', 'Alcohol', 'Malic Acid', 'Ash', 'Alcalinity of Ash', 'Magnesium',
-'Total Phenols', 'Flavanoids', 'Nonflavanoid Phenols', 'Proanthocyanins',
-'Color Intensity', 'Hue', 'OD280/OD315', 'Proline']
+
+columns = [
+    'Class', 'Alcohol', 'Malic Acid', 'Ash', 'Alcalinity of Ash',
+    'Magnesium', 'Total Phenols', 'Flavanoids',
+    'Nonflavanoid Phenols', 'Proanthocyanins',
+    'Color Intensity', 'Hue', 'OD280/OD315', 'Proline'
+]
 
 wine_data = pd.read_csv(url, header=None, names=columns)
 
+# Features and Labels
 X = wine_data.iloc[:, 1:].values
 y = wine_data.iloc[:, 0].values - 1
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+# Split Dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
 
+# Feature Scaling
 scaler = StandardScaler()
+
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
+# Build ANN Model
 model = keras.Sequential([
     keras.layers.Dense(16, activation='relu', input_shape=(X_train.shape[1],)),
     keras.layers.Dense(8, activation='relu'),
     keras.layers.Dense(3, activation='softmax')
 ])
 
-model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+# Compile Model
+model.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
 
-model.fit(X_train, y_train, epochs=50, batch_size=5, validation_data=(X_test, y_test))
+# Train Model
+history = model.fit(
+    X_train,
+    y_train,
+    epochs=50,
+    batch_size=5,
+    validation_data=(X_test, y_test)
+)
 
+# Evaluate Model
 test_loss, test_acc = model.evaluate(X_test, y_test)
-print(test_acc)
 
+# Predictions
 predictions = np.argmax(model.predict(X_test), axis=1)
 
+# Accuracy Score
 acc = accuracy_score(y_test, predictions)
-print(acc)`
+
+# Final Output
+print("\\nFinal Results")
+print(f"Test Loss : {test_loss:.4f}")
+print(f"Test Accuracy : {test_acc:.4f}")
+print(f"Prediction Accuracy : {acc:.4f}")
+`
 
 const exp5Code = `import numpy as np
 from tensorflow import keras
