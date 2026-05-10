@@ -561,7 +561,6 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 from tensorflow.keras.utils import to_categorical
-
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
 y_train = to_categorical(y_train, num_classes=10)
@@ -580,10 +579,17 @@ model = Sequential([
     Dropout(0.5),
     Dense(10, activation='softmax')
 ])
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-model.fit(datagen.flow(x_train, y_train, batch_size=64), epochs=5, validation_data=(x_test, y_test))
+model.compile(
+    optimizer='adam',
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+model.fit(
+    datagen.flow(x_train, y_train, batch_size=64),
+    epochs=5,
+    validation_data=(x_test, y_test)
+)
 loss, accuracy = model.evaluate(x_test, y_test, verbose=0)
-print(f"\\nTest Loss : {loss:.4f}")
 print(f"Test Accuracy : {accuracy * 100:.2f}%")
 `;
 const expFiles: Record<
