@@ -261,37 +261,62 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 
 max_words = 10000
+
 (x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=max_words)
 
 max_len = 500
+
 x_train = pad_sequences(x_train, maxlen=max_len)
 x_test = pad_sequences(x_test, maxlen=max_len)
 
 model = Sequential()
-model.add(layers.Embedding(input_dim=max_words, output_dim=128, input_length=max_len))
+
+model.add(layers.Embedding(input_dim=max_words, output_dim=128))
 model.add(layers.LSTM(128))
 model.add(layers.Dense(1, activation='sigmoid'))
 
-model.compile(loss='binary_crossentropy', optimizer=Adam(), metrics=['accuracy'])
+model.compile(
+    loss='binary_crossentropy',
+    optimizer=Adam(),
+    metrics=['accuracy']
+)
 
-model.fit(x_train, y_train, epochs=5, batch_size=64, validation_data=(x_test, y_test))
+model.fit(
+    x_train,
+    y_train,
+    epochs=5,
+    batch_size=64,
+    validation_data=(x_test, y_test)
+)
 
 test_loss, test_acc = model.evaluate(x_test, y_test)
-print(test_acc)
+
+print("\\nFinal Results")
+print(f"Test Loss : {test_loss:.4f}")
+print(f"Test Accuracy : {test_acc:.4f}")
 
 predictions = model.predict(x_test[:5])
-print(predictions)
 
-user_input = input()
+print("\\nPredictions")
+for i, pred in enumerate(predictions):
+    print(f"Review {i+1} Prediction : {pred[0]:.4f}")
+
+print("\\nEnter a review using word indices separated by space")
+print("Example : 1 14 20 43 5")
+
+user_input = input("Enter Review : ")
+
 user_review = [int(i) for i in user_input.split()]
+
 user_review = pad_sequences([user_review], maxlen=max_len)
 
 prediction = model.predict(user_review)[0][0]
 
 if prediction >= 0.5:
-    print("POSITIVE")
+    print("\\nPredicted Sentiment : POSITIVE")
 else:
-    print("NEGATIVE")`
+    print("\\nPredicted Sentiment : NEGATIVE")
+`
 
 const exp6Code = `import pandas as pd
 import numpy as np
