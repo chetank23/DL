@@ -69,9 +69,10 @@ or_labels = np.array([0,1,1,1])
 or_gate = Perceptron(2)
 or_gate.train(inputs, or_labels)
 
-print("\nOR Gate")
+print("\\nOR Gate")
 for i in inputs:
-    print(i, "->", or_gate.predict(i))`
+    print(i, "->", or_gate.predict(i))
+`
 
 const exp2Code = `import numpy as np
 
