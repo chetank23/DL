@@ -43,6 +43,7 @@ const expShortLabels: Record<string, string> = {
   "Exp-12": "CIFAR-10 CNN",
 };
 const exp1Code = `import numpy as np
+
 class Perceptron:
     def __init__(self, input_size, learning_rate=0.1):
         self.weights = np.zeros(input_size + 1)
@@ -73,6 +74,7 @@ for i in inputs:
     print(i, "->", or_gate.predict(i))
 `;
 const exp2Code = `import numpy as np
+
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 def sigmoid_derivative(x):
@@ -131,6 +133,7 @@ const exp3Code = `import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.datasets import mnist
+
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
 y_train = (y_train % 2).astype("int32")
@@ -164,6 +167,7 @@ from tensorflow import keras
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
+
 url = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data"
 columns = [
     'Class', 'Alcohol', 'Malic Acid', 'Ash', 'Alcalinity of Ash',
@@ -215,6 +219,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.datasets import imdb
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
+
 max_words = 10000
 (x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=max_words)
 max_len = 500
@@ -263,6 +268,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
 from tensorflow import keras
 from tensorflow.keras import layers
+
 day_data = pd.read_csv("bikerent_data.csv")
 day_data = day_data.drop(columns=["instant", "dteday", "casual", "registered"])
 X = day_data.drop("cnt", axis=1)
@@ -330,6 +336,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
 from tensorflow.keras.layers import SimpleRNN, Dense
+
 url = "https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv"
 data = pd.read_csv(url)
 X = data.drop('medv', axis=1)
@@ -371,6 +378,7 @@ from tensorflow import keras
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.datasets import mnist
+
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
 x_train = x_train.reshape(-1, 28, 28, 1)
@@ -411,6 +419,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+
 url = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv"
 column_names = [
     'Pregnancies',
@@ -468,6 +477,7 @@ const exp10Code = `import numpy as np
 from tensorflow import keras
 from tensorflow.keras.layers import SimpleRNN, Dense
 from sklearn.model_selection import train_test_split
+
 np.random.seed(42)
 timesteps = 10
 features = 1
@@ -516,6 +526,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
+
 url = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/daily-min-temperatures.csv"
 data = pd.read_csv(url)
 values = data['Temp'].values.reshape(-1, 1)
@@ -579,6 +590,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 from tensorflow.keras.utils import to_categorical
+
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
 y_train = to_categorical(y_train, num_classes=10)
