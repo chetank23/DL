@@ -503,15 +503,14 @@ from tensorflow.keras.layers import LSTM, Dense
 
 url = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/daily-min-temperatures.csv"
 data = pd.read_csv(url)
-values = data['Temp'].values.reshape(-1, 1)
+values = data['Temp'].values.reshape(-1,1)
 scaler = MinMaxScaler()
 scaled_data = scaler.fit_transform(values)
 def create_sequences(data, time_steps=10):
-    X = []
-    y = []
-    for i in range(len(data) - time_steps):
-        X.append(data[i:i + time_steps])
-        y.append(data[i + time_steps])
+    X, y = [], []
+    for i in range(len(data)-time_steps):
+        X.append(data[i:i+time_steps])
+        y.append(data[i+time_steps])
     return np.array(X), np.array(y)
 time_steps = 10
 X, y = create_sequences(scaled_data, time_steps)
@@ -525,10 +524,7 @@ model = Sequential([
     LSTM(50, activation='relu', input_shape=(time_steps, 1)),
     Dense(1)
 ])
-model.compile(
-    optimizer='adam',
-    loss='mse'
-)
+model.compile(optimizer='adam', loss='mse')
 model.fit(
     X_train,
     y_train,
@@ -536,7 +532,8 @@ model.fit(
     batch_size=32
 )
 loss = model.evaluate(X_test, y_test)
-print(f"\\nTest MSE : {loss:.4f}")
+print("\\nModel Training Complete")
+print(f"Test MSE: {loss:.4f}")
 predictions = model.predict(X_test)
 predictions = scaler.inverse_transform(predictions)
 y_test_actual = scaler.inverse_transform(y_test)
@@ -544,19 +541,20 @@ plt.plot(y_test_actual, label="Actual")
 plt.plot(predictions, label="Predicted")
 plt.legend()
 plt.show()
-print("\\nPredict Next Day Temperature")
-print("\\nEnter last 10 temperature values separated by space")
+print("\\nPredict Next Day's Temperature")
+print("\\nEnter the last 10 temperature values (space-separated)")
+print("Example: 20.7 17.9 18.8 14.6 15.8 15.8 15.8 17.4 21.8 20.0")
 user_input = input(">> ")
 user_values = list(map(float, user_input.split()))
 if len(user_values) != 10:
-    print("Please enter exactly 10 values")
+    print("Please enter exactly 10 values.")
 else:
     user_array = np.array(user_values).reshape(-1, 1)
     user_scaled = scaler.transform(user_array)
     user_scaled = user_scaled.reshape(1, 10, 1)
     predicted_scaled = model.predict(user_scaled)
     predicted_temp = scaler.inverse_transform(predicted_scaled)
-    print(f"Predicted Next Day Temperature : {predicted_temp[0][0]:.2f} °C")
+    print(f"Predicted next day temperature: {predicted_temp[0][0]:.2f}°C")
 `;
 const exp12Code = `import tensorflow as tf
 from tensorflow.keras.datasets import cifar10
