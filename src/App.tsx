@@ -326,9 +326,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
 from tensorflow import keras
 from tensorflow.keras import layers
-from google.colab import files
-
-uploaded = files.upload()
 
 day_data = pd.read_csv("bikerent_data.csv")
 
@@ -338,10 +335,14 @@ X = day_data.drop("cnt", axis=1)
 y = day_data["cnt"]
 
 scaler = StandardScaler()
+
 X_scaled = scaler.fit_transform(X)
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X_scaled, y, test_size=0.2, random_state=42
+    X_scaled,
+    y,
+    test_size=0.2,
+    random_state=42
 )
 
 model = keras.Sequential([
@@ -350,12 +351,20 @@ model = keras.Sequential([
     layers.Dense(1)
 ])
 
-model.compile(optimizer='adam', loss='mse', metrics=['mae'])
+model.compile(
+    optimizer='adam',
+    loss='mse',
+    metrics=['mae']
+)
 
-early_stop = keras.callbacks.EarlyStopping(patience=5, restore_best_weights=True)
+early_stop = keras.callbacks.EarlyStopping(
+    patience=5,
+    restore_best_weights=True
+)
 
 history = model.fit(
-    X_train, y_train,
+    X_train,
+    y_train,
     epochs=100,
     batch_size=32,
     validation_split=0.2,
@@ -364,31 +373,48 @@ history = model.fit(
 )
 
 loss, mae = model.evaluate(X_test, y_test)
-print(mae)
+
+print("\\nFinal Results")
+print(f"Test MAE : {mae:.2f}")
 
 y_pred = model.predict(X_test).flatten()
 
 mse = mean_squared_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
 
-print(mse)
-print(r2)
+print(f"Test MSE : {mse:.2f}")
+print(f"R2 Score : {r2:.2f}")
 
-plt.figure(figsize=(10, 5))
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
+plt.figure(figsize=(10,5))
+
+plt.plot(history.history['loss'], label='Training Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+
+plt.title("Model Training Performance")
+plt.xlabel("Epochs")
+plt.ylabel("Loss")
+
+plt.legend()
+plt.grid(True)
+
 plt.show()
 
+print("\\nEnter details to predict bike rentals")
+
 user_input = {}
+
 for col in X.columns:
-    val = float(input())
+    val = float(input(f"Enter value for {col}: "))
     user_input[col] = val
 
 user_df = pd.DataFrame([user_input])
+
 user_scaled = scaler.transform(user_df)
 
 prediction = model.predict(user_scaled)[0][0]
-print(int(prediction))`
+
+print(f"\\nPredicted Bike Rentals : {int(prediction)}")
+`
 
 const exp7Code = `import pandas as pd
 import numpy as np
