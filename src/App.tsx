@@ -542,6 +542,7 @@ model = Sequential([
     Conv2D(32, (3,3), activation='relu', padding='same', input_shape=x_train.shape[1:]),
     MaxPooling2D((2,2)),
     Dropout(0.25),
+    
     Conv2D(64, (3,3), activation='relu', padding='same'),
     MaxPooling2D((2,2)),
     Dropout(0.25),
