@@ -364,12 +364,7 @@ model.compile(
     loss='mse',
     metrics=['mae']
 )
-model.fit(
-    X_train,
-    y_train,
-    epochs=50,
-    batch_size=32
-)
+model.fit( X_train, y_train, epochs=50, batch_size=32)
 loss, mae = model.evaluate(X_test, y_test)
 print(f"Mean Absolute Error: {mae}")
 `;
@@ -397,17 +392,8 @@ model.compile(
     loss="binary_crossentropy",
     metrics=["accuracy"]
 )
-model.fit(
-    x_train,
-    y_train_eo,
-    epochs=5,
-    validation_data=(x_test, y_test_eo)
-)
-loss, accuracy = model.evaluate(
-    x_test,
-    y_test_eo,
-    verbose=0
-)
+model.fit(  x_train, y_train_eo, epochs=5, validation_data=(x_test, y_test_eo))
+loss, accuracy = model.evaluate(x_test,y_test_eo,verbose=0)
 print(f"Test Loss : {loss:.4f}")
 print(f"Accuracy : {accuracy:.4f}")
 `;
@@ -432,19 +418,10 @@ column_names = [
     'Age',
     'Outcome'
 ]
-df = pd.read_csv(
-    url,
-    header=None,
-    names=column_names
-)
+df = pd.read_csv(url,header=None,names=column_names)
 X = df.iloc[:, :-1].values
 y = df.iloc[:, -1].values
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.2,
-    random_state=42
-)
+X_train, X_test, y_train, y_test = train_test_split( X, y, test_size=0.2, random_state=42)
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
@@ -458,19 +435,8 @@ model.compile(
     loss='binary_crossentropy',
     metrics=['accuracy']
 )
-model.fit(
-    X_train,
-    y_train,
-    epochs=100,
-    batch_size=10,
-    verbose=1
-)
-loss, accuracy = model.evaluate(
-    X_test,
-    y_test,
-    verbose=0
-)
-    
+model.fit(X_train, y_train,epochs=100,batch_size=10,verbose=1)
+loss, accuracy = model.evaluate(X_test,y_test,verbose=0)
 print(f"Test Accuracy : {accuracy:.2f}")
 `;
 const exp10Code = `import numpy as np
@@ -532,11 +498,13 @@ model.fit(
     batch_size=32
 )
 loss = model.evaluate(X_test, y_test)
+
 print("\\nModel Training Complete")
 print(f"Test MSE: {loss:.4f}")
 predictions = model.predict(X_test)
 predictions = scaler.inverse_transform(predictions)
 y_test_actual = scaler.inverse_transform(y_test)
+
 plt.plot(y_test_actual, label="Actual")
 plt.plot(predictions, label="Predicted")
 plt.legend()
@@ -545,6 +513,7 @@ print("\\nPredict Next Day's Temperature")
 print("\\nEnter the last 10 temperature values")
 user_input = input(">> ")
 user_values = list(map(float, user_input.split()))
+
 if len(user_values) != 10:
     print("Please enter exactly 10 values.")
 else:
@@ -561,10 +530,12 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 from tensorflow.keras.utils import to_categorical
+
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
 y_train = to_categorical(y_train, num_classes=10)
 y_test = to_categorical(y_test, num_classes=10)
+
 datagen = ImageDataGenerator(horizontal_flip=True)
 datagen.fit(x_train)
 model = Sequential([
