@@ -55,7 +55,6 @@ class Perceptron:
 
 inputs = np.array([[0,0],[0,1],[1,0],[1,1]])
 
-# AND Gate
 and_labels = np.array([0,0,0,1])
 and_gate = Perceptron(2)
 and_gate.train(inputs, and_labels)
@@ -64,7 +63,6 @@ print("AND Gate")
 for i in inputs:
     print(i, "->", and_gate.predict(i))
 
-# OR Gate
 or_labels = np.array([0,1,1,1])
 or_gate = Perceptron(2)
 or_gate.train(inputs, or_labels)
@@ -126,8 +124,6 @@ class NeuralNetwork:
     def predict(self, inputs):
         return np.round(self.forward(inputs))
 
-
-# XOR Dataset
 X = np.array([
     [0, 0],
     [0, 1],
@@ -142,11 +138,9 @@ y = np.array([
     [0]
 ])
 
-# Create and Train Neural Network
 nn = NeuralNetwork(2, 2, 1)
 nn.train(X, y)
 
-# Predictions
 print("\\nPredicted Outputs")
 for x in X:
     prediction = int(nn.predict(np.array([x]))[0][0])
@@ -158,17 +152,13 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.datasets import mnist
 
-# Load dataset
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-# Normalize data
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
-# Convert labels to Even(0) / Odd(1)
 y_train = (y_train % 2).astype("int32")
 y_test = (y_test % 2).astype("int32")
 
-# Build model
 model = Sequential([
     Flatten(input_shape=(28, 28)),
     Dense(64, activation="relu"),
@@ -176,14 +166,12 @@ model = Sequential([
     Dense(1, activation="sigmoid")
 ])
 
-# Compile model
 model.compile(
     optimizer="adam",
     loss="binary_crossentropy",
     metrics=["accuracy"]
 )
 
-# Train model
 model.fit(
     x_train,
     y_train,
@@ -191,10 +179,8 @@ model.fit(
     validation_data=(x_test, y_test)
 )
 
-# Evaluate model
 loss, accuracy = model.evaluate(x_test, y_test)
 
-# Print final results
 print("\\nFinal Results")
 print(f"Loss : {loss:.4f}")
 print(f"Accuracy : {accuracy:.4f}")
@@ -208,7 +194,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
 
-# Load Dataset
 url = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data"
 
 columns = [
@@ -220,11 +205,9 @@ columns = [
 
 wine_data = pd.read_csv(url, header=None, names=columns)
 
-# Features and Labels
 X = wine_data.iloc[:, 1:].values
 y = wine_data.iloc[:, 0].values - 1
 
-# Split Dataset
 X_train, X_test, y_train, y_test = train_test_split(
     X, y,
     test_size=0.2,
@@ -232,27 +215,23 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 )
 
-# Feature Scaling
 scaler = StandardScaler()
 
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
-# Build ANN Model
 model = keras.Sequential([
     keras.layers.Dense(16, activation='relu', input_shape=(X_train.shape[1],)),
     keras.layers.Dense(8, activation='relu'),
     keras.layers.Dense(3, activation='softmax')
 ])
 
-# Compile Model
 model.compile(
     optimizer='adam',
     loss='sparse_categorical_crossentropy',
     metrics=['accuracy']
 )
 
-# Train Model
 history = model.fit(
     X_train,
     y_train,
@@ -261,16 +240,12 @@ history = model.fit(
     validation_data=(X_test, y_test)
 )
 
-# Evaluate Model
 test_loss, test_acc = model.evaluate(X_test, y_test)
 
-# Predictions
 predictions = np.argmax(model.predict(X_test), axis=1)
 
-# Accuracy Score
 acc = accuracy_score(y_test, predictions)
 
-# Final Output
 print("\\nFinal Results")
 print(f"Test Loss : {test_loss:.4f}")
 print(f"Test Accuracy : {test_acc:.4f}")
