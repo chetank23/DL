@@ -417,63 +417,62 @@ print(f"\\nPredicted Bike Rentals : {int(prediction)}")
 `
 
 const exp7Code = `import pandas as pd
-import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.models import Sequential
+from tensorflow import keras
 from tensorflow.keras.layers import SimpleRNN, Dense
 
 url = "https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv"
+
 data = pd.read_csv(url)
 
-X = data.drop("medv", axis=1)
-y = data["medv"]
+X = data.drop('medv', axis=1)
+y = data['medv']
 
 scaler = MinMaxScaler()
-X_scaled = scaler.fit_transform(X)
 
-X_rnn = X_scaled.reshape(X_scaled.shape[0], 1, X_scaled.shape[1])
+X = scaler.fit_transform(X)
+
+X = X.reshape(X.shape[0], 1, X.shape[1])
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X_rnn, y, test_size=0.2, random_state=42
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
 )
 
-model = Sequential([
-    SimpleRNN(64, activation="relu", input_shape=(X_train.shape[1], X_train.shape[2])),
-    Dense(32, activation="relu"),
-    Dense(1)
-])
+model = keras.Sequential()
 
-model.compile(optimizer="adam", loss="mse", metrics=["mae"])
+model.add(
+    SimpleRNN(
+        128,
+        activation='relu',
+        input_shape=(X_train.shape[1], X_train.shape[2])
+    )
+)
+
+model.add(Dense(1))
+
+model.compile(
+    optimizer='adam',
+    loss='mse',
+    metrics=['mae']
+)
 
 model.fit(
     X_train,
     y_train,
     epochs=50,
-    batch_size=32,
-    verbose=1
+    batch_size=32
 )
 
-loss, mae = model.evaluate(X_test, y_test, verbose=0)
-print("Test Loss (MSE):", round(loss, 4))
-print("Test MAE:", round(mae, 4))
+loss, mae = model.evaluate(X_test, y_test)
 
-feature_names = data.drop("medv", axis=1).columns
-print("Enter values for the following features:")
-user_input = []
+print(f"Mean Absolute Error: {mae}")
+`
 
-for feature in feature_names:
-    val = float(input(f"{feature}: "))
-    user_input.append(val)
-
-user_input = np.array(user_input).reshape(1, -1)
-user_input_scaled = scaler.transform(user_input)
-user_input_rnn = user_input_scaled.reshape(1, 1, user_input_scaled.shape[1])
-
-prediction = model.predict(user_input_rnn, verbose=0)
-print("Predicted House Price (MEDV):", round(float(prediction[0][0]), 4))`
-
-const exp8Code = `import tensorflow
+const exp8Code = `import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 from tensorflow.keras.models import Sequential
@@ -481,8 +480,7 @@ from tensorflow.keras.datasets import mnist
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-x_train = x_train / 255.0
-x_test = x_test / 255.0
+x_train, x_test = x_train / 255.0, x_test / 255.0
 
 x_train = x_train.reshape(-1, 28, 28, 1)
 x_test = x_test.reshape(-1, 28, 28, 1)
@@ -498,14 +496,28 @@ model = Sequential([
     Dense(1, activation="sigmoid")
 ])
 
-model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+model.compile(
+    optimizer="adam",
+    loss="binary_crossentropy",
+    metrics=["accuracy"]
+)
 
-model.fit(x_train, y_train_eo, epochs=5, validation_data=(x_test, y_test_eo))
+model.fit(
+    x_train,
+    y_train_eo,
+    epochs=5,
+    validation_data=(x_test, y_test_eo)
+)
 
-loss, accuracy = model.evaluate(x_test, y_test_eo, verbose=0)
+loss, accuracy = model.evaluate(
+    x_test,
+    y_test_eo,
+    verbose=0
+)
 
-print(loss)
-print(accuracy)`
+print(f"Test Loss : {loss:.4f}")
+print(f"Accuracy : {accuracy:.4f}")
+`
 
 const exp9Code = `import numpy as np
 import pandas as pd
@@ -516,21 +528,38 @@ from tensorflow.keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-url = 'https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv'
+url = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv"
 
 column_names = [
-'Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness',
-'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age', 'Outcome'
+    'Pregnancies',
+    'Glucose',
+    'BloodPressure',
+    'SkinThickness',
+    'Insulin',
+    'BMI',
+    'DiabetesPedigreeFunction',
+    'Age',
+    'Outcome'
 ]
 
-df = pd.read_csv(url, header=None, names=column_names)
+df = pd.read_csv(
+    url,
+    header=None,
+    names=column_names
+)
 
 X = df.iloc[:, :-1].values
 y = df.iloc[:, -1].values
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
 
 scaler = StandardScaler()
+
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
@@ -540,13 +569,29 @@ model = Sequential([
     Dense(1, activation='sigmoid')
 ])
 
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
 
-model.fit(X_train, y_train, epochs=100, batch_size=10, verbose=1)
+model.fit(
+    X_train,
+    y_train,
+    epochs=100,
+    batch_size=10,
+    verbose=1
+)
 
-loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
+loss, accuracy = model.evaluate(
+    X_test,
+    y_test,
+    verbose=0
+)
 
-print(accuracy)`
+print(f"\\nTest Loss : {loss:.4f}")
+print(f"Test Accuracy : {accuracy:.2f}")
+`
 
 const exp10Code = `import numpy as np
 from tensorflow import keras
@@ -560,21 +605,51 @@ features = 1
 samples = 1000
 
 X = np.random.rand(samples, timesteps, features)
+
 y = np.random.randint(0, 2, samples)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
 
 model = keras.Sequential()
-model.add(SimpleRNN(32, activation='relu', input_shape=(timesteps, features)))
+
+model.add(
+    SimpleRNN(
+        32,
+        activation='relu',
+        input_shape=(timesteps, features)
+    )
+)
+
 model.add(Dense(1, activation='sigmoid'))
 
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
 
-model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=0)
+model.fit(
+    X_train,
+    y_train,
+    epochs=10,
+    batch_size=32,
+    verbose=0
+)
 
-_, accuracy = model.evaluate(X_test, y_test, verbose=0)
+loss, accuracy = model.evaluate(
+    X_test,
+    y_test,
+    verbose=0
+)
 
-print(accuracy)`
+print(f"Test Loss : {loss:.4f}")
+print(f"Test Accuracy : {accuracy:.4f}")
+`
 
 const exp11Code = `import numpy as np
 import pandas as pd
