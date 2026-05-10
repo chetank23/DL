@@ -480,12 +480,7 @@ def create_sequences(data, time_steps=10):
     return np.array(X), np.array(y)
 time_steps = 10
 X, y = create_sequences(scaled_data, time_steps)
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.2,
-    shuffle=False
-)
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,shuffle=False)
 model = Sequential([
     LSTM(50, activation='relu', input_shape=(time_steps, 1)),
     Dense(1)
