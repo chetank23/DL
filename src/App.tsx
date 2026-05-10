@@ -53,21 +53,25 @@ class Perceptron:
                 prediction = self.activation(np.dot(self.weights, x))
                 self.weights += self.lr * (y - prediction) * x
 
-inputs = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+inputs = np.array([[0,0],[0,1],[1,0],[1,1]])
 
-and_labels = np.array([0, 0, 0, 1])
+# AND Gate
+and_labels = np.array([0,0,0,1])
 and_gate = Perceptron(2)
 and_gate.train(inputs, and_labels)
 
+print("AND Gate")
 for i in inputs:
-    print(i, and_gate.predict(i))
+    print(i, "->", and_gate.predict(i))
 
-or_labels = np.array([0, 1, 1, 1])
+# OR Gate
+or_labels = np.array([0,1,1,1])
 or_gate = Perceptron(2)
 or_gate.train(inputs, or_labels)
 
+print("\nOR Gate")
 for i in inputs:
-    print(i, or_gate.predict(i))`
+    print(i, "->", or_gate.predict(i))`
 
 const exp2Code = `import numpy as np
 
