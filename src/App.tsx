@@ -84,21 +84,21 @@ def sigmoid_derivative(x):
 
 class NeuralNetwork:
     def __init__(self, input_size, hidden_size, output_size, learning_rate=0.5):
-        self.input_size = input_size
-        self.hidden_size = hidden_size
-        self.output_size = output_size
         self.learning_rate = learning_rate
 
-        self.weights_input_hidden = np.random.uniform(-1, 1, (self.input_size, self.hidden_size))
-        self.weights_hidden_output = np.random.uniform(-1, 1, (self.hidden_size, self.output_size))
-        self.bias_hidden = np.random.uniform(-1, 1, (1, self.hidden_size))
-        self.bias_output = np.random.uniform(-1, 1, (1, self.output_size))
+        self.weights_input_hidden = np.random.uniform(-1, 1, (input_size, hidden_size))
+        self.weights_hidden_output = np.random.uniform(-1, 1, (hidden_size, output_size))
+
+        self.bias_hidden = np.random.uniform(-1, 1, (1, hidden_size))
+        self.bias_output = np.random.uniform(-1, 1, (1, output_size))
 
     def forward(self, inputs):
         self.hidden_input = np.dot(inputs, self.weights_input_hidden) + self.bias_hidden
         self.hidden_output = sigmoid(self.hidden_input)
+
         self.final_input = np.dot(self.hidden_output, self.weights_hidden_output) + self.bias_output
         self.final_output = sigmoid(self.final_input)
+
         return self.final_output
 
     def backward(self, inputs, expected_output, actual_output):
@@ -118,28 +118,40 @@ class NeuralNetwork:
         for epoch in range(epochs):
             output = self.forward(inputs)
             self.backward(inputs, outputs, output)
+
             if epoch % 1000 == 0:
                 loss = np.mean((outputs - output) ** 2)
-                print(loss)
+                print(f"Epoch {epoch} Loss : {loss:.4f}")
 
     def predict(self, inputs):
         return np.round(self.forward(inputs))
 
-X = np.array([[0, 0],
-              [0, 1],
-              [1, 0],
-              [1, 1]])
 
-y = np.array([[0],
-              [1],
-              [1],
-              [0]])
+# XOR Dataset
+X = np.array([
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+])
 
+y = np.array([
+    [0],
+    [1],
+    [1],
+    [0]
+])
+
+# Create and Train Neural Network
 nn = NeuralNetwork(2, 2, 1)
 nn.train(X, y)
 
+# Predictions
+print("\\nPredicted Outputs")
 for x in X:
-    print(x, int(nn.predict(np.array([x]))[0][0]))`
+    prediction = int(nn.predict(np.array([x]))[0][0])
+    print(f"Input : {x} -> Predicted : {prediction}")
+`
 
 const exp3Code = `import tensorflow as tf
 from tensorflow.keras.models import Sequential
